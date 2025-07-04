@@ -166,8 +166,6 @@ GMAIL_PASSWORD=your_gmail_app_password
    pip install -r requirements.txt
    ```
 
-4. **Set up your `.env` file** (see above).
-
 5. **Run the app:**
    ```
    python traveler_planer.py
