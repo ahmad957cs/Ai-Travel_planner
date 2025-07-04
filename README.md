@@ -214,18 +214,48 @@ instance/
 
 ---
 📷 Demo / Screenshots
+<img width="960" alt="image" src="https://github.com/user-attachments/assets/8b8b296d-5b0d-4f4c-ac6f-6f88c27eaeda" />
+<img width="960" alt="image" src="https://github.com/user-attachments/assets/561ce724-5875-47d8-83f6-f5d1b9fa335e" />
+<img width="960" alt="image" src="https://github.com/user-attachments/assets/03a10460-1b35-4bb3-87c1-15e2f0482602" />
+<img width="960" alt="image" src="https://github.com/user-attachments/assets/9b5abbf7-fd96-4360-9420-004cc9af4d08" />
+<img width="931" alt="image" src="https://github.com/user-attachments/assets/935c01f4-3d56-413a-b080-6da2df204e13" />
+<img width="905" alt="image" src="https://github.com/user-attachments/assets/54658174-3b46-4bd2-b996-13f7a24565e8" />
 
 
 ## 🙋‍♂️ Authors & Contributors
 
-- [Your Name]
-- [Your Team/Collaborators]
+- [Ahmad gul]
+- [Muqaddas Akram]
+- [Habiba sidique]
+- [usama]
 
 ---
 
 ## 📄 License
 
-[MIT License] or your chosen license.
+[MIT License] 
+MIT License
+
+Copyright (c) 2025 [Ahmad gul]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights 
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+copies of the Software, and to permit persons to whom the Software is 
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in 
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
+THE SOFTWARE.
+
 
 ---
 
