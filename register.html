@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register - AI Travel Planner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'inter': ['Inter', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            secondary: {
+              50: '#fdf4ff',
+              100: '#fae8ff',
+              500: '#a855f7',
+              600: '#9333ea',
+              700: '#7c3aed',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .input-focus:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+    }
+    .p-12 {
+      padding: 0rem !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full bg-cover bg-center font-inter flex items-center justify-center relative overflow-hidden"
+      style="background-image: url('/static/images/airport_bg.jpg');">
+  
+  <!-- Animated Background Overlay -->
+  <div class="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-purple-900/40 to-indigo-900/40"></div>
+  <div class="absolute inset-0 bg-black/20"></div>
+  
+  <!-- Floating Elements -->
+  <div class="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
+  <div class="absolute bottom-20 right-20 w-40 h-40 bg-purple-500/10 rounded-full blur-xl animate-pulse delay-1000"></div>
+  
+  <div class="relative z-10 w-full flex items-center justify-center p-4">
+    <div class="flex w-full max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl">
+      <!-- Left: Hero Section -->
+      <div class="hidden lg:flex flex-col justify-center items-start bg-gradient-to-br from-blue-600/90 to-purple-700/90 w-1/2 p-12 text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="relative z-10 w-full h-full flex flex-col justify-center px-10 py-12">
+          <div class="mb-8">
+            <h1 class="text-5xl font-bold mb-2 leading-tight">
+              Join the
+              <span class="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300">
+                Adventure
+              </span>
+            </h1>
+            <p class="text-xl text-blue-100 leading-relaxed mb-8">
+              Create your account to unlock personalized travel plans, smart recommendations, and more.
+            </p>
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <span class="text-white text-sm">🌍</span>
+              </div>
+              <span class="text-blue-100">Explore Destinations</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <span class="text-white text-sm">🧳</span>
+              </div>
+              <span class="text-blue-100">Save Your Plans</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <span class="text-white text-sm">🤖</span>
+              </div>
+              <span class="text-blue-100">AI-Powered Suggestions</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Right: Register Form -->
+      <div class="w-full lg:w-1/2 glass-effect p-12 flex flex-col justify-center">
+        <div class="max-w-md mx-auto w-full">
+          <!-- Header -->
+          <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <span class="text-2xl">📝</span>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Create Account</h2>
+            <p class="text-gray-600">Sign up to start your travel planning journey</p>
+          </div>
+          <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+              <div class="mb-6 space-y-3">
+          {% for category, message in messages %}
+                  <div class="px-4 py-3 rounded-xl border-l-4 {% if category == 'success' %}bg-green-50 text-green-800 border-green-400{% elif category == 'info' %}bg-blue-50 text-blue-800 border-blue-400{% elif category == 'error' %}bg-red-50 text-red-800 border-red-400{% else %}bg-gray-50 text-gray-800 border-gray-400{% endif %}">
+                    <div class="flex items-center">
+                      <span class="mr-2">
+                        {% if category == 'success' %}✅{% elif category == 'error' %}❌{% else %}ℹ️{% endif %}
+                      </span>
+              {{ message }}
+                    </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+          <!-- Register Form -->
+    <form method="POST" class="space-y-6">
+      <div>
+              <label class="block mb-2 font-medium text-gray-700">Name</label>
+              <div class="relative">
+                <input name="name" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-xl input-focus transition-all duration-200 bg-white/80" placeholder="Enter your name" required />
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                  <span class="text-gray-400">👤</span>
+                </div>
+              </div>
+      </div>
+      <div>
+              <label class="block mb-2 font-medium text-gray-700">Email Address</label>
+              <div class="relative">
+                <input name="email" type="email" class="w-full px-4 py-3 border border-gray-300 rounded-xl input-focus transition-all duration-200 bg-white/80" placeholder="Enter your email" required />
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                  <span class="text-gray-400">📧</span>
+                </div>
+              </div>
+      </div>
+      <div>
+              <label class="block mb-2 font-medium text-gray-700">Password</label>
+              <div class="relative">
+                <input name="password" type="password" class="w-full px-4 py-3 border border-gray-300 rounded-xl input-focus transition-all duration-200 bg-white/80" placeholder="Create a password" required />
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                  <span class="text-gray-400">🔒</span>
+                </div>
+              </div>
+      </div>
+            <button type="submit" class="w-full btn-primary text-white font-semibold py-3 px-6 rounded-xl shadow-lg">
+          Register
+        </button>
+          </form>
+          <!-- Divider -->
+          <div class="my-6 flex items-center">
+            <div class="flex-1 border-t border-gray-300"></div>
+            <span class="px-4 text-sm text-gray-500">or</span>
+            <div class="flex-1 border-t border-gray-300"></div>
+          </div>
+          <!-- Login Link -->
+          <div class="text-center">
+            <p class="text-gray-600">
+              Already have an account? 
+              <a href="/login" class="text-blue-600 hover:text-blue-700 font-semibold hover:underline transition-colors">
+                Sign in
+              </a>
+            </p>
+          </div>
+          <!-- Back to Home -->
+          <div class="text-center mt-6">
+            <a href="/" class="inline-flex items-center text-gray-500 hover:text-gray-700 transition-colors">
+              <span class="mr-2">←</span>
+              Back to Home
+            </a>
+          </div>
+        </div>
+      </div>
+      </div>
+  </div>
+</body>
+</html> 
