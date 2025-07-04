@@ -176,29 +176,7 @@ GMAIL_PASSWORD=your_gmail_app_password
 6. **Open in browser:**  
    Visit [http://localhost:5000](http://localhost:5000)
 
----
 
-## 📤 What Not to Upload to GitHub
-
-- `instance/travel_planner.db` (database)
-- `venv/` (virtual environment)
-- `.env` (contains secrets)
-- Any `.json` files with personal data
-
-Add a `.gitignore` file:
-
-```
-venv/
-__pycache__/
-*.pyc
-instance/
-.env
-*.db
-*.sqlite3
-*.json
-```
-
----
 
 ## 🧠 Technologies & Concepts Explained
 
