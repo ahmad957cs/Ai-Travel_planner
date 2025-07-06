@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Travel Planner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .input-focus:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+    }
+    /* Mobile-first responsive adjustments */
+    @media (max-width: 640px) {
+      .container-padding {
+        padding: 1rem !important;
+      }
+      .mobile-text {
+        font-size: 0.875rem !important;
+      }
+      .mobile-padding {
+        padding: 0.75rem !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-100 to-purple-200 flex items-center justify-center">
+  <!-- Animated Background Overlay -->
+  <div class="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-purple-900/40 to-indigo-900/40"></div>
+  <div class="absolute inset-0 bg-black/20"></div>
+  <!-- Floating Elements -->
+  <div class="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
+  <div class="absolute bottom-20 right-20 w-40 h-40 bg-purple-500/10 rounded-full blur-xl animate-pulse delay-1000"></div>
+  
+  <!-- Navigation Bar - Enhanced Mobile Responsive -->
+  <div class="fixed top-0 left-0 right-0 z-30 p-1 sm:p-2 flex flex-wrap items-center justify-between gap-1 sm:gap-2 bg-white/90 backdrop-blur-sm border-b border-white/20">
+    <div class="flex items-center gap-1 sm:gap-2">
+      <h1 class="text-base sm:text-lg md:text-xl font-bold text-purple-700">✈️ AI Travel Planner</h1>
+    </div>
+    <div class="flex items-center gap-1 sm:gap-2">
+      {% if session.user_id %}
+        <a href="/profile" class="px-1.5 sm:px-2 md:px-3 py-1 sm:py-1.5 md:py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-md sm:rounded-lg font-bold shadow-md text-xs sm:text-sm flex items-center gap-1 hover:scale-105 hover:from-purple-600 hover:to-pink-600 transition-transform duration-200">
+          <span class="text-xs sm:text-sm">👤</span> <span class="hidden sm:inline">Profile</span>
+        </a>
+        <a href="/logout" class="px-1.5 sm:px-2 md:px-3 py-1 sm:py-1.5 md:py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-md sm:rounded-lg font-bold shadow-md text-xs sm:text-sm flex items-center gap-1 hover:scale-105 hover:from-red-600 hover:to-orange-600 transition-transform duration-200">
+          <span class="text-xs sm:text-sm">🚪</span> <span class="hidden sm:inline">Logout</span>
+        </a>
+      {% else %}
+        <a href="/login" class="px-1.5 sm:px-2 py-1 sm:py-1.5 bg-blue-100 text-blue-700 rounded-md font-semibold hover:bg-blue-200 text-xs sm:text-sm">Login</a>
+        <a href="/register" class="px-1.5 sm:px-2 py-1 sm:py-1.5 bg-green-100 text-green-700 rounded-md font-semibold hover:bg-green-200 text-xs sm:text-sm">Register</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="relative z-10 min-h-screen flex items-center justify-center pt-16 sm:pt-20 pb-4 sm:pb-8 px-2 sm:px-4">
+    <div class="backdrop-blur-xl bg-white/70 shadow-2xl rounded-2xl sm:rounded-3xl w-full max-w-6xl mx-auto p-3 sm:p-4 md:p-8 lg:p-12 flex flex-col relative overflow-y-auto" style="max-height: calc(100vh - 100px);">
+      <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center text-purple-700 mb-3 sm:mb-4 md:mb-6">
+        ✈️ AI Travel <span class="text-pink-500">Planner</span>
+      </h1>
+      
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="mb-3 sm:mb-4 md:mb-6">
+            {% for category, message in messages %}
+              <div class="px-2 sm:px-3 md:px-4 py-2 md:py-3 rounded-lg sm:rounded-xl border-l-4 {% if category == 'success' %}bg-green-50 text-green-800 border-green-400{% elif category == 'info' %}bg-blue-50 text-blue-800 border-blue-400{% elif category == 'error' %}bg-red-50 text-red-800 border-red-400{% else %}bg-gray-50 text-gray-800 border-gray-400{% endif %}">
+                <div class="flex items-center">
+                  <span class="mr-2">
+                    {% if category == 'success' %}✅{% elif category == 'error' %}❌{% else %}ℹ️{% endif %}
+                  </span>
+                  <span class="text-xs sm:text-sm md:text-base">{{ message }}</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Profile Summary Section - Enhanced Mobile Responsive -->
+      {% if profile_summary %}
+        <div class="mb-3 sm:mb-4 md:mb-6 p-2 sm:p-3 md:p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg sm:rounded-xl border border-purple-200">
+          <h3 class="text-sm sm:text-base md:text-lg font-semibold text-purple-700 mb-2 md:mb-3 flex items-center">
+            <span class="mr-2">👤</span> Traveler Profile
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3 text-xs sm:text-sm">
+            <div class="bg-white/50 p-2 md:p-3 rounded-lg">
+              <span class="font-medium text-gray-700">Profile ID:</span> 
+              <span class="text-gray-600 break-all">{{ profile_summary.user_id[:8] }}...</span>
+            </div>
+            <div class="bg-white/50 p-2 md:p-3 rounded-lg">
+              <span class="font-medium text-gray-700">Budget:</span> 
+              <span class="text-green-600">{{ profile_summary.profile_data.budget or 'Not set' }}</span>
+            </div>
+            <div class="bg-white/50 p-2 md:p-3 rounded-lg sm:col-span-2">
+              <span class="font-medium text-gray-700">Interests:</span> 
+              <span class="text-blue-600 break-words">{{ profile_summary.profile_data.interests|join(', ') if profile_summary.profile_data.interests else 'Not set' }}</span>
+            </div>
+            <div class="bg-white/50 p-2 md:p-3 rounded-lg">
+              <span class="font-medium text-gray-700">Nodes:</span> 
+              <span class="text-purple-600">{{ profile_summary.node_count }}</span>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Travel Plan Form - Enhanced Mobile Responsive -->
+      <form action="/" method="POST" class="space-y-3 sm:space-y-4 md:space-y-6 mb-4 sm:mb-6 md:mb-8">
+        <!-- First Row: Destination, Departure, Duration -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+          <div class="sm:col-span-2 lg:col-span-1">
+            <label class="block mb-1 md:mb-2 font-medium text-gray-700 text-xs sm:text-sm md:text-base">🌐 Destination</label>
+            <input name="destination" type="text" placeholder="Enter destination" class="w-full px-2 sm:px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg sm:rounded-xl input-focus transition-all duration-200 bg-white/80 text-xs sm:text-sm md:text-base" required value="{{ destination or '' }}" />
+          </div>
+          <div>
+            <label class="block mb-1 md:mb-2 font-medium text-gray-700 text-xs sm:text-sm md:text-base">🏠 Departure City</label>
+            <input name="departure_city" type="text" placeholder="City" class="w-full px-2 sm:px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg sm:rounded-xl input-focus transition-all duration-200 bg-white/80 text-xs sm:text-sm md:text-base" required />
+          </div>
+          <div>
+            <label class="block mb-1 md:mb-2 font-medium text-gray-700 text-xs sm:text-sm md:text-base">📅 Trip Duration (Days)</label>
+            <select name="days" class="w-full px-2 sm:px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg sm:rounded-xl input-focus transition-all duration-200 bg-white/80 text-xs sm:text-sm md:text-base" required>
+              <option value="3">3 Days</option>
+              <option value="5">5 Days</option>
+              <option value="7">7 Days</option>
+              <option value="10">10 Days</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Second Row: Budget and Interests -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
+          <div>
+            <label class="block mb-1 md:mb-2 font-medium text-gray-700 text-xs sm:text-sm md:text-base">💲 Budget (USD)</label>
+            <input name="budget" type="number" placeholder="e.g., 2000" class="w-full px-2 sm:px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg sm:rounded-xl input-focus transition-all duration-200 bg-white/80 text-xs sm:text-sm md:text-base" required />
+          </div>
+          <div>
+            <label class="block mb-1 md:mb-2 font-medium text-gray-700 text-xs sm:text-sm md:text-base">💙 Interests (comma separated)</label>
+            <input name="preferences" type="text" placeholder="e.g., Culture, Food, Nature" class="w-full px-2 sm:px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg sm:rounded-xl input-focus transition-all duration-200 bg-white/80 text-xs sm:text-sm md:text-base" />
+          </div>
+        </div>
+
+        <!-- Third Row: Check-in and Check-out Dates -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
+          <div>
+            <label class="block mb-1 md:mb-2 font-medium text-gray-700 text-xs sm:text-sm md:text-base">📅 Check-in Date</label>
+            <input name="checkin_date" type="date" class="w-full px-2 sm:px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg sm:rounded-xl input-focus transition-all duration-200 bg-white/80 text-xs sm:text-sm md:text-base" required />
+          </div>
+          <div>
+            <label class="block mb-1 md:mb-2 font-medium text-gray-700 text-xs sm:text-sm md:text-base">📅 Check-out Date</label>
+            <input name="checkout_date" type="date" class="w-full px-2 sm:px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg sm:rounded-xl input-focus transition-all duration-200 bg-white/80 text-xs sm:text-sm md:text-base" required />
+          </div>
+        </div>
+
+        <div class="text-center pt-2 md:pt-4">
+          <button type="submit" class="px-4 sm:px-6 md:px-8 py-2 md:py-3 btn-primary text-white font-semibold rounded-lg sm:rounded-xl shadow-lg text-xs sm:text-sm md:text-base min-h-[44px] touch-manipulation">
+            🚀 Generate Travel Plan
+          </button>
+        </div>
+      </form>
+
+      <!-- Results Section - Enhanced Mobile Responsive -->
+      {% if result %}
+        <div class="space-y-3 sm:space-y-4 md:space-y-6 mt-4 sm:mt-6 md:mt-8">
+          <!-- Personalized Recommendations -->
+          {% if personalized_recommendations %}
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border border-purple-200">
+              <h2 class="text-base sm:text-lg md:text-xl font-bold text-purple-700 mb-2 sm:mb-3 md:mb-4 flex items-center">
+                <span class="mr-2">🎯</span> Personalized Recommendations
+              </h2>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
+                {% if personalized_recommendations.budget_considerations %}
+                  <div class="bg-white/50 p-2 sm:p-3 md:p-4 rounded-lg">
+                    <h4 class="font-semibold text-green-700 mb-1 sm:mb-2 text-xs sm:text-sm md:text-base">💰 Budget Considerations</h4>
+                    <ul class="list-disc list-inside space-y-1 text-xs sm:text-sm text-gray-700">
+                      {% for rec in personalized_recommendations.budget_considerations %}
+                        <li class="break-words">{{ rec }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endif %}
+                
+                {% if personalized_recommendations.interest_based_suggestions %}
+                  <div class="bg-white/50 p-2 sm:p-3 md:p-4 rounded-lg">
+                    <h4 class="font-semibold text-blue-700 mb-1 sm:mb-2 text-xs sm:text-sm md:text-base">🎨 Interest-Based Suggestions</h4>
+                    <ul class="list-disc list-inside space-y-1 text-xs sm:text-sm text-gray-700">
+                      {% for rec in personalized_recommendations.interest_based_suggestions %}
+                        <li class="break-words">{{ rec }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+
+          <!-- Budget Analysis - Enhanced Mobile Responsive -->
+          {% if result.budget_analysis %}
+            <div class="p-3 sm:p-4 md:p-6 mb-3 sm:mb-4 md:mb-6 rounded-lg sm:rounded-xl bg-white/80 border border-green-200">
+              <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-green-700 mb-2 sm:mb-3 md:mb-4 flex items-center">
+                <span class="mr-2">🪙</span> Budget Analysis
+              </h2>
+              <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 sm:gap-2 md:gap-4">
+                {% for category, data in result.budget_analysis.items() %}
+                  {% if category != 'total_estimated' and category != 'budget_status' and category != 'savings_potential' %}
+                    <div class="text-center p-1 sm:p-2 md:p-3 bg-white rounded-lg shadow-sm">
+                      <div class="font-semibold text-gray-700 capitalize text-xs sm:text-sm">{{ category.replace('_', ' ') }}</div>
+                      <div class="text-xs sm:text-sm md:text-lg font-bold text-green-600">${{ data.estimated }}</div>
+                      <div class="text-xs text-gray-500">{{ data.range }}</div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              
+              {% if result.budget_analysis.total_estimated %}
+                <div class="mt-2 sm:mt-3 md:mt-4 grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-2 md:gap-4 text-center">
+                  <div class="p-1 sm:p-2 md:p-3 bg-white rounded-lg shadow-sm">
+                    <div class="font-semibold text-gray-700 text-xs sm:text-sm">Total Estimated</div>
+                    <div class="text-sm sm:text-lg md:text-xl font-bold text-blue-600">${{ result.budget_analysis.total_estimated }}</div>
+                  </div>
+                  <div class="p-1 sm:p-2 md:p-3 bg-white rounded-lg shadow-sm">
+                    <div class="font-semibold text-gray-700 text-xs sm:text-sm">Budget Status</div>
+                    <div class="text-xs sm:text-sm md:text-lg font-bold {% if result.budget_analysis.budget_status == 'comfortable' %}text-green-600{% elif result.budget_analysis.budget_status == 'tight' %}text-orange-600{% else %}text-red-600{% endif %}">
+                      {{ result.budget_analysis.budget_status|title }}
+                    </div>
+                  </div>
+                  <div class="p-1 sm:p-2 md:p-3 bg-white rounded-lg shadow-sm">
+                    <div class="font-semibold text-gray-700 text-xs sm:text-sm">Savings Potential</div>
+                    <div class="text-xs sm:text-sm md:text-lg font-bold text-green-600">${{ result.budget_analysis.savings_potential }}</div>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          <!-- Travel Tips - Enhanced Mobile Responsive -->
+          {% if result.travel_tips %}
+            <div class="p-3 sm:p-4 md:p-6 mb-3 sm:mb-4 md:mb-6 rounded-lg sm:rounded-xl bg-blue-50 border border-blue-200">
+              <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-blue-700 mb-2 sm:mb-3 md:mb-4 flex items-center">
+                <span class="mr-2">💡</span> Travel Tips
+              </h2>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+                {% for category, tips in result.travel_tips.items() %}
+                  <div>
+                    <h4 class="font-semibold text-blue-700 mb-1 sm:mb-2 capitalize text-xs sm:text-sm md:text-base">{{ category.replace('_', ' ') }}</h4>
+                    <ul class="list-disc list-inside space-y-1 text-xs sm:text-sm">
+                      {% for tip in tips %}
+                        <li class="break-words">{{ tip }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+          <!-- Flights - Enhanced Mobile Responsive -->
+          {% if result.flights %}
+            <div class="p-3 sm:p-4 md:p-6 mb-3 sm:mb-4 md:mb-6 rounded-lg sm:rounded-xl bg-white/80 border border-purple-200">
+              <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-purple-700 mb-2 sm:mb-3 md:mb-4 flex items-center">
+                <span class="mr-2">✈️</span> Flights
+              </h2>
+              <ul class="list-disc list-inside space-y-1 text-gray-800 text-xs sm:text-sm md:text-base">
+                {% for flight in result.flights %}
+                  <li class="break-words">{{ flight }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          <!-- Hotels - Enhanced Mobile Responsive -->
+          {% if result.hotels %}
+            <div class="p-3 sm:p-4 md:p-6 mb-3 sm:mb-4 md:mb-6 rounded-lg sm:rounded-xl bg-white/80 border border-green-200">
+              <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-green-700 mb-2 sm:mb-3 md:mb-4 flex items-center">
+                <span class="mr-2">🏨</span> Hotels
+              </h2>
+              <ul class="list-disc list-inside space-y-1 text-gray-800 text-xs sm:text-sm md:text-base">
+                {% for hotel in result.hotels %}
+                  <li class="break-words"><strong>{{ hotel.name }}</strong> – <span class="text-green-700 font-semibold">{{ hotel.price }}</span></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          <!-- Enhanced Itinerary - Enhanced Mobile Responsive -->
+          {% if result.itinerary %}
+            <div class="p-3 sm:p-4 md:p-6 mb-3 sm:mb-4 md:mb-6 rounded-lg sm:rounded-xl bg-white/80 border border-pink-200">
+              <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-pink-700 mb-2 sm:mb-3 md:mb-4 flex items-center">
+                <span class="mr-2">📅</span> Itinerary
+              </h2>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-3 md:gap-6">
+                {% for day, activities in result.itinerary.items() %}
+                  <div class="bg-white p-2 sm:p-3 md:p-4 rounded-lg shadow-sm border border-purple-100">
+                    <h3 class="font-bold text-purple-700 mb-1 sm:mb-2 text-xs sm:text-sm md:text-base">{{ day }}</h3>
+                    {% if activities is string %}
+                      <p class="text-gray-700 text-xs sm:text-sm break-words">{{ activities }}</p>
+                    {% else %}
+                      <ul class="list-disc list-inside space-y-1 text-gray-700 text-xs sm:text-sm">
+                        {% for item in activities %}
+                          <li class="break-words">{{ item }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+          <!-- AI-Generated Personalized Recommendations - Enhanced Mobile Responsive -->
+          {% if result.personalized_recommendations %}
+            <div class="bg-gradient-to-r from-pink-50 to-purple-50 p-3 sm:p-4 md:p-6 rounded-lg border border-pink-200">
+              <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-pink-700 mb-2 sm:mb-3 md:mb-4 flex items-center">
+                <span class="mr-2">🤖</span> AI Personalized Recommendations
+              </h2>
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+                {% for category, recommendations in result.personalized_recommendations.items() %}
+                  <div>
+                    <h4 class="font-semibold text-pink-700 mb-1 sm:mb-2 capitalize text-xs sm:text-sm md:text-base">{{ category.replace('_', ' ') }}</h4>
+                    <ul class="list-disc list-inside space-y-1 text-xs sm:text-sm">
+                      {% for rec in recommendations %}
+                        <li class="break-words">{{ rec }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    function saveProfile() {
+      fetch('/save_profile')
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            alert('Profile saved successfully!');
+          } else {
+            alert('Error saving profile');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error saving profile');
+        });
+    }
+  </script>
+</body>
+</html>
