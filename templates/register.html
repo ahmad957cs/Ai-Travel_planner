@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register - AI Travel Planner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'inter': ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    .input-focus:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .btn-primary {
+      background: #3b82f6;
+      transition: all 0.2s ease;
+    }
+    .btn-primary:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    }
+    /* Mobile-first responsive adjustments */
+    @media (max-width: 640px) {
+      .mobile-text {
+        font-size: 0.875rem !important;
+      }
+      .mobile-padding {
+        padding: 0.75rem !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full bg-gray-50 font-inter">
+  
+  <!-- Main Container - Enhanced Mobile Responsive -->
+  <div class="min-h-screen flex items-center justify-center p-2 sm:p-4">
+    <div class="w-full max-w-5xl mx-auto">
+      <div class="flex flex-col lg:flex-row rounded-xl sm:rounded-2xl overflow-hidden shadow-xl bg-white border border-gray-200">
+        
+        <!-- Left Side - Hero Section -->
+        <div class="lg:w-1/2 bg-gradient-to-br from-gray-900 to-gray-800 p-4 sm:p-6 md:p-8 lg:p-12 relative">
+          <div class="h-full flex flex-col justify-center">
+            <!-- Logo and Brand -->
+            <div class="text-center lg:text-left mb-4 sm:mb-6 md:mb-8">
+              <div class="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-lg sm:rounded-xl mb-4 sm:mb-6">
+                <span class="text-white text-lg sm:text-xl font-bold">🌟</span>
+              </div>
+              <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-4">
+                Join AI Travel Planner
+              </h1>
+              <p class="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed">
+                Create your account and start planning your next adventure with intelligent AI assistance and professional travel insights.
+              </p>
+            </div>
+            
+            <!-- Features -->
+            <div class="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+              <div class="flex items-center space-x-3 sm:space-x-4">
+                <div class="w-6 h-6 sm:w-8 sm:h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <span class="text-white text-xs sm:text-sm">🌍</span>
+                </div>
+                <div>
+                  <h3 class="text-white font-semibold text-sm sm:text-base">Global Destinations</h3>
+                  <p class="text-gray-400 text-xs sm:text-sm">Access to 500+ destinations worldwide</p>
+                </div>
+              </div>
+              
+              <div class="flex items-center space-x-3 sm:space-x-4">
+                <div class="w-6 h-6 sm:w-8 sm:h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <span class="text-white text-xs sm:text-sm">🧳</span>
+                </div>
+                <div>
+                  <h3 class="text-white font-semibold text-sm sm:text-base">Smart Planning</h3>
+                  <p class="text-gray-400 text-xs sm:text-sm">AI-powered itinerary optimization</p>
+                </div>
+              </div>
+              
+              <div class="flex items-center space-x-3 sm:space-x-4">
+                <div class="w-6 h-6 sm:w-8 sm:h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <span class="text-white text-xs sm:text-sm">🤖</span>
+                </div>
+                <div>
+                  <h3 class="text-white font-semibold text-sm sm:text-base">AI Recommendations</h3>
+                  <p class="text-gray-400 text-xs sm:text-sm">Personalized travel suggestions</p>
+                </div>
+              </div>
+            </div>
+            
+
+          </div>
+        </div>
+        
+        <!-- Right Side - Register Form -->
+        <div class="lg:w-1/2 p-4 sm:p-6 md:p-8 lg:p-12 flex items-center">
+          <div class="w-full max-w-md mx-auto">
+            <!-- Form Header -->
+            <div class="text-center mb-6 sm:mb-8">
+              <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Create Account</h2>
+              <p class="text-gray-600 text-xs sm:text-sm md:text-base">Start your travel planning journey</p>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                <div class="mb-4 sm:mb-6 space-y-2 sm:space-y-3">
+                  {% for category, message in messages %}
+                    <div class="px-3 sm:px-4 py-2 sm:py-3 rounded-lg border {% if category == 'success' %}bg-green-50 text-green-800 border-green-200{% elif category == 'info' %}bg-blue-50 text-blue-800 border-blue-200{% elif category == 'error' %}bg-red-50 text-red-800 border-red-200{% else %}bg-gray-50 text-gray-800 border-gray-200{% endif %}">
+                      <div class="flex items-center">
+                        <span class="mr-2">
+                          {% if category == 'success' %}✓{% elif category == 'error' %}✗{% else %}ℹ{% endif %}
+                        </span>
+                        <span class="text-xs sm:text-sm">{{ message }}</span>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            <!-- Register Form -->
+            <form method="POST" class="space-y-4 sm:space-y-6">
+              <!-- Name Field -->
+              <div>
+                <label class="block mb-1 sm:mb-2 font-medium text-gray-700 text-xs sm:text-sm md:text-base">
+                  Full Name
+                </label>
+                <input 
+                  name="name" 
+                  type="text" 
+                  class="w-full px-4 py-4 border border-gray-300 rounded-lg input-focus transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 text-base" 
+                  placeholder="Enter your full name"
+                  style="font-size: 16px; min-height: 48px;"
+                  required 
+                />
+              </div>
+              
+              <!-- Email Field -->
+              <div>
+                <label class="block mb-1 sm:mb-2 font-medium text-gray-700 text-xs sm:text-sm md:text-base">
+                  Email Address
+                </label>
+                <input 
+                  name="email" 
+                  type="email" 
+                  class="w-full px-4 py-4 border border-gray-300 rounded-lg input-focus transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 text-base" 
+                  placeholder="Enter your email address"
+                  style="font-size: 16px; min-height: 48px;"
+                  required 
+                />
+              </div>
+              
+              <!-- Password Field -->
+              <div>
+                <label class="block mb-1 sm:mb-2 font-medium text-gray-700 text-xs sm:text-sm md:text-base">
+                  Password
+                </label>
+                <input 
+                  name="password" 
+                  type="password" 
+                  class="w-full px-4 py-4 border border-gray-300 rounded-lg input-focus transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 text-base" 
+                  placeholder="Create a strong password"
+                  style="font-size: 16px; min-height: 48px;"
+                  required 
+                />
+                <p class="mt-1 sm:mt-2 text-xs text-gray-500">Password must be at least 8 characters long</p>
+              </div>
+
+              <!-- Terms and Conditions -->
+              <div class="flex items-start space-x-2 sm:space-x-3">
+                <input type="checkbox" class="mt-1 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" required>
+                <label class="text-xs sm:text-sm text-gray-600">
+                  I agree to the 
+                  <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Terms of Service</a> 
+                  and 
+                  <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</a>
+                </label>
+              </div>
+
+              <!-- Register Button -->
+              <button type="submit" class="w-full btn-primary text-white font-semibold py-4 px-6 rounded-lg text-base touch-manipulation" style="min-height: 48px; font-size: 16px;">
+                Create Account
+              </button>
+            </form>
+
+
+
+            <!-- Login Link -->
+            <div class="text-center mt-6 sm:mt-8">
+              <p class="text-gray-600 text-xs sm:text-sm">
+                Already have an account? 
+                <a href="/login" class="text-blue-600 hover:text-blue-700 font-medium">
+                  Sign in here
+                </a>
+              </p>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="text-center mt-4 sm:mt-6">
+              <a href="/" class="inline-flex items-center text-gray-500 hover:text-gray-700 transition-colors text-xs sm:text-sm">
+                ← Back to Home
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
