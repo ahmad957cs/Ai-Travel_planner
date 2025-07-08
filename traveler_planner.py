@@ -450,9 +450,15 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email').lower()
+        email = request.form.get('email')
         password = request.form.get('password')
         remember_me = request.form.get('remember_me') == 'on'
+        
+        if not email or not password:
+            flash('Email and password are required.', 'error')
+            return render_template('login.html')
+        
+        email = email.lower()
         user = User.query.filter_by(email=email).first()
         if user and user.check_password(password):
             if not user.is_verified:
