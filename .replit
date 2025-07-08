@@ -14,3 +14,7 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python traveler_planner.py"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
