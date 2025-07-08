@@ -1,1 +1,369 @@
-The goal is to enhance mobile responsiveness by updating CSS media queries, form input styling, and adding a comprehensive viewport meta tag.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
+    <title>AI Travel Planner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .input-focus:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0.5rem;
+            }
+            .form-container {
+                padding: 1rem;
+            }
+            .grid-cols-1 {
+                grid-template-columns: 1fr;
+            }
+            .text-responsive {
+                font-size: 0.875rem;
+            }
+            .input-responsive {
+                font-size: 16px; /* Prevents zoom on iOS */
+                min-height: 44px; /* iOS touch target */
+            }
+            .btn-responsive {
+                min-height: 44px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .mobile-stack {
+                flex-direction: column;
+            }
+            .mobile-full {
+                width: 100%;
+            }
+            .mobile-text-sm {
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .ultra-mobile {
+                padding: 0.25rem;
+            }
+            .form-ultra-mobile {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-100 to-purple-200 font-inter">
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-30 p-2 sm:p-4 flex flex-wrap items-center justify-between gap-2 bg-white/90 backdrop-blur-sm border-b border-white/20">
+        <div class="flex items-center gap-2">
+            <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-purple-700">✈️ AI Travel Planner</h1>
+        </div>
+        <div class="flex items-center gap-2 mobile-stack">
+            <a href="/profile" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-sm mobile-full text-center">Profile</a>
+            <a href="/logout" class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold text-sm mobile-full text-center">Logout</a>
+        </div>
+    </div>
+
+    <div class="pt-20 pb-8 px-2 sm:px-4 main-container ultra-mobile">
+        <div class="max-w-6xl mx-auto">
+            
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="mb-6 space-y-3">
+                        {% for category, message in messages %}
+                            <div class="px-4 py-3 rounded-xl border-l-4 {% if category == 'success' %}bg-green-50 text-green-800 border-green-400{% elif category == 'info' %}bg-blue-50 text-blue-800 border-blue-400{% elif category == 'error' %}bg-red-50 text-red-800 border-red-400{% else %}bg-gray-50 text-gray-800 border-gray-400{% endif %}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Profile Summary -->
+            {% if profile_summary %}
+                <div class="glass-effect rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 md:p-8 mb-6 form-container form-ultra-mobile">
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 text-center">Your Travel Profile</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-blue-50 p-3 sm:p-4 rounded-lg">
+                            <h3 class="font-semibold text-blue-800 text-sm sm:text-base">Profile Created</h3>
+                            <p class="text-blue-600 text-xs sm:text-sm">{{ profile_summary.created_at }}</p>
+                        </div>
+                        <div class="bg-green-50 p-3 sm:p-4 rounded-lg">
+                            <h3 class="font-semibold text-green-800 text-sm sm:text-base">Last Updated</h3>
+                            <p class="text-green-600 text-xs sm:text-sm">{{ profile_summary.last_updated }}</p>
+                        </div>
+                        <div class="bg-purple-50 p-3 sm:p-4 rounded-lg sm:col-span-2 lg:col-span-1">
+                            <h3 class="font-semibold text-purple-800 text-sm sm:text-base">Total Trips</h3>
+                            <p class="text-purple-600 text-xs sm:text-sm">{{ profile_summary.total_trips or 0 }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Travel Planning Form -->
+            <div class="glass-effect rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 md:p-8 lg:p-10 mb-8 form-container form-ultra-mobile">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-800 mb-6 sm:mb-8">Plan Your Dream Trip</h2>
+                
+                <form method="POST" class="space-y-4 sm:space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                        <!-- Destination -->
+                        <div class="md:col-span-2">
+                            <label class="block text-sm sm:text-base font-medium text-gray-700 mb-2">Destination</label>
+                            <input name="destination" type="text" 
+                                   class="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg input-focus transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 input-responsive" 
+                                   placeholder="Where do you want to go?" 
+                                   value="{{ destination or '' }}" required>
+                        </div>
+                        
+                        <!-- Departure City -->
+                        <div>
+                            <label class="block text-sm sm:text-base font-medium text-gray-700 mb-2">Departure City</label>
+                            <input name="departure_city" type="text" 
+                                   class="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg input-focus transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 input-responsive" 
+                                   placeholder="From which city?" required>
+                        </div>
+
+                        <!-- Budget -->
+                        <div>
+                            <label class="block text-sm sm:text-base font-medium text-gray-700 mb-2">Budget (USD)</label>
+                            <select name="budget" 
+                                    class="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg input-focus transition-all duration-200 bg-white text-gray-900 input-responsive" required>
+                                <option value="">Select budget range</option>
+                                <option value="500">Under $500</option>
+                                <option value="1000">$500 - $1,000</option>
+                                <option value="2000">$1,000 - $2,000</option>
+                                <option value="5000">$2,000 - $5,000</option>
+                                <option value="10000">$5,000+</option>
+                            </select>
+                        </div>
+
+                        <!-- Days -->
+                        <div>
+                            <label class="block text-sm sm:text-base font-medium text-gray-700 mb-2">Duration (Days)</label>
+                            <input name="days" type="number" min="1" max="30" 
+                                   class="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg input-focus transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 input-responsive" 
+                                   placeholder="Number of days" required>
+                        </div>
+
+                        <!-- Check-in Date -->
+                        <div>
+                            <label class="block text-sm sm:text-base font-medium text-gray-700 mb-2">Check-in Date</label>
+                            <input name="checkin_date" type="date" 
+                                   class="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg input-focus transition-all duration-200 bg-white text-gray-900 input-responsive" 
+                                   required>
+                        </div>
+
+                        <!-- Check-out Date -->
+                        <div>
+                            <label class="block text-sm sm:text-base font-medium text-gray-700 mb-2">Check-out Date</label>
+                            <input name="checkout_date" type="date" 
+                                   class="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg input-focus transition-all duration-200 bg-white text-gray-900 input-responsive" 
+                                   required>
+                        </div>
+
+                        <!-- Preferences -->
+                        <div class="md:col-span-2">
+                            <label class="block text-sm sm:text-base font-medium text-gray-700 mb-2">Travel Preferences</label>
+                            <textarea name="preferences" rows="3" 
+                                      class="w-full px-4 py-3 sm:py-4 border border-gray-300 rounded-lg input-focus transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 resize-none input-responsive" 
+                                      placeholder="Describe your interests, activities you enjoy, dietary restrictions, etc."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center pt-4">
+                        <button type="submit" 
+                                class="w-full sm:w-auto btn-primary text-white font-semibold py-4 px-8 sm:px-12 rounded-xl shadow-lg text-base sm:text-lg btn-responsive">
+                            🌟 Create My Travel Plan
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            {% if result %}
+                <div class="glass-effect rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 md:p-8 lg:p-10 mb-8 form-container form-ultra-mobile">
+                    <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6 sm:mb-8">Your Travel Plan for {{ destination }}</h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+                        <!-- Flights -->
+                        <div class="bg-blue-50 p-4 sm:p-6 rounded-xl">
+                            <h3 class="text-lg sm:text-xl font-bold text-blue-800 mb-3 sm:mb-4">✈️ Flights</h3>
+                            <div class="space-y-2 sm:space-y-3">
+                                {% for flight in result.flights %}
+                                    <div class="bg-white p-3 sm:p-4 rounded-lg shadow-sm">
+                                        <p class="text-sm sm:text-base text-gray-700">{{ flight }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Hotels -->
+                        <div class="bg-green-50 p-4 sm:p-6 rounded-xl">
+                            <h3 class="text-lg sm:text-xl font-bold text-green-800 mb-3 sm:mb-4">🏨 Hotels</h3>
+                            <div class="space-y-2 sm:space-y-3">
+                                {% for hotel in result.hotels %}
+                                    <div class="bg-white p-3 sm:p-4 rounded-lg shadow-sm">
+                                        <p class="font-semibold text-sm sm:text-base text-gray-800">{{ hotel.name }}</p>
+                                        <p class="text-sm text-green-600">{{ hotel.price }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Itinerary -->
+                    {% if result.itinerary %}
+                        <div class="mt-6 sm:mt-8 bg-purple-50 p-4 sm:p-6 rounded-xl">
+                            <h3 class="text-lg sm:text-xl font-bold text-purple-800 mb-3 sm:mb-4">📅 Itinerary</h3>
+                            <div class="space-y-3 sm:space-y-4">
+                                {% for day, activities in result.itinerary.items() %}
+                                    <div class="bg-white p-3 sm:p-4 rounded-lg shadow-sm">
+                                        <h4 class="font-semibold text-base sm:text-lg text-purple-700 mb-2">{{ day }}</h4>
+                                        <ul class="space-y-1 sm:space-y-2">
+                                            {% for activity in activities %}
+                                                <li class="text-sm sm:text-base text-gray-700 flex items-start">
+                                                    <span class="text-purple-500 mr-2">•</span>
+                                                    {{ activity }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Budget Analysis -->
+                    {% if result.budget_analysis %}
+                        <div class="mt-6 sm:mt-8 bg-yellow-50 p-4 sm:p-6 rounded-xl">
+                            <h3 class="text-lg sm:text-xl font-bold text-yellow-800 mb-3 sm:mb-4">💰 Budget Analysis</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                {% for category, amount in result.budget_analysis.items() %}
+                                    <div class="bg-white p-3 sm:p-4 rounded-lg shadow-sm">
+                                        <p class="font-semibold text-sm sm:text-base text-gray-800">{{ category.replace('_', ' ').title() }}</p>
+                                        <p class="text-sm sm:text-base text-yellow-600">{{ amount }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Travel Tips -->
+                    {% if result.travel_tips %}
+                        <div class="mt-6 sm:mt-8 bg-indigo-50 p-4 sm:p-6 rounded-xl">
+                            <h3 class="text-lg sm:text-xl font-bold text-indigo-800 mb-3 sm:mb-4">💡 Travel Tips</h3>
+                            <div class="space-y-3 sm:space-y-4">
+                                {% for category, tips in result.travel_tips.items() %}
+                                    <div class="bg-white p-3 sm:p-4 rounded-lg shadow-sm">
+                                        <h4 class="font-semibold text-base sm:text-lg text-indigo-700 mb-2">{{ category.replace('_', ' ').title() }}</h4>
+                                        <ul class="space-y-1 sm:space-y-2">
+                                            {% for tip in tips %}
+                                                <li class="text-sm sm:text-base text-gray-700 flex items-start">
+                                                    <span class="text-indigo-500 mr-2">•</span>
+                                                    {{ tip }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <!-- Previous Travel Plans -->
+            {% if user_plans %}
+                <div class="glass-effect rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 md:p-8 lg:p-10 form-container form-ultra-mobile">
+                    <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6 sm:mb-8">Your Previous Travel Plans</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+                        {% for plan in user_plans[:6] %}
+                            <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                                <h3 class="font-bold text-base sm:text-lg text-gray-800 mb-2">{{ plan.destination }}</h3>
+                                <div class="space-y-1 sm:space-y-2 text-xs sm:text-sm text-gray-600">
+                                    <p><span class="font-medium">From:</span> {{ plan.departure_city }}</p>
+                                    <p><span class="font-medium">Duration:</span> {{ plan.days }} days</p>
+                                    <p><span class="font-medium">Budget:</span> {{ plan.budget }}</p>
+                                    <p><span class="font-medium">Dates:</span> {{ plan.checkin_date }} - {{ plan.checkout_date }}</p>
+                                </div>
+                                <div class="mt-3 sm:mt-4 flex flex-col sm:flex-row gap-2">
+                                    <a href="/plan/{{ plan.id }}" class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-center text-xs sm:text-sm font-medium">View</a>
+                                    <a href="/plan/{{ plan.id }}/edit" class="flex-1 px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-center text-xs sm:text-sm font-medium">Edit</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if user_plans|length > 6 %}
+                        <div class="text-center mt-6 sm:mt-8">
+                            <a href="/profile" class="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium text-sm sm:text-base">
+                                View All Plans
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Set minimum date to today for date inputs
+        const today = new Date().toISOString().split('T')[0];
+        document.querySelector('input[name="checkin_date"]').setAttribute('min', today);
+        document.querySelector('input[name="checkout_date"]').setAttribute('min', today);
+        
+        // Update checkout min date when checkin changes
+        document.querySelector('input[name="checkin_date"]').addEventListener('change', function() {
+            const checkinDate = this.value;
+            document.querySelector('input[name="checkout_date"]').setAttribute('min', checkinDate);
+        });
+
+        // Auto-update days when dates change
+        function updateDays() {
+            const checkin = document.querySelector('input[name="checkin_date"]').value;
+            const checkout = document.querySelector('input[name="checkout_date"]').value;
+            
+            if (checkin && checkout) {
+                const checkinDate = new Date(checkin);
+                const checkoutDate = new Date(checkout);
+                const diffTime = Math.abs(checkoutDate - checkinDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays > 0) {
+                    document.querySelector('input[name="days"]').value = diffDays;
+                }
+            }
+        }
+        
+        document.querySelector('input[name="checkin_date"]').addEventListener('change', updateDays);
+        document.querySelector('input[name="checkout_date"]').addEventListener('change', updateDays);
+    </script>
+</body>
+</html>
